@@ -68,8 +68,7 @@ public class Room {
 
     /**
      *
-     * Check if room matrix is well formed, with only reachable positions,
-     * and contains only allowed characters
+     * Check if room matrix is well formed, with only allowed characters and accessible positions
      *
      * @return
      */
@@ -79,18 +78,21 @@ public class Room {
 
         for(String[] row : roomMatrix) {
             if(row.length != nbColumns)  {
-                throw new InvalidRoomStructureException("Wrong room structure, all lines must have same length !");
+                throw new InvalidRoomStructureException(
+                        InvalidRoomStructureException.WRONG_ROOM_STRUCTURE_LINES_LENGTH);
             }
 
             if(Arrays.stream(row).anyMatch(s -> !allowed.contains(s))) {
-                throw new InvalidRoomContentException("Unauthorized characters found in room content !");
+                throw new InvalidRoomContentException(
+                        InvalidRoomContentException.UNAUTHORIZED_CHARACTERS_FOUND);
             }
         }
 
         Set<Position> positions = new HashSet<>();
         positions.add(getRandomPosition());
         if(!isAllPositionsAccessible(positions)) {
-            throw new InvalidRoomStructureException("Wrong room structure : some positions are not accessible by the hoover !");
+            throw new InvalidRoomStructureException(
+                    InvalidRoomStructureException.WRONG_ROOM_STRUCTURE_POSITIONS_NOT_ACCESSIBLE);
         }
 
         return true;
