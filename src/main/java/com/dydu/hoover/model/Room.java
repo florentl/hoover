@@ -1,9 +1,9 @@
 package com.dydu.hoover.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import com.dydu.hoover.exceptions.InvalidRoomContentException;
+import com.dydu.hoover.exceptions.InvalidRoomStructureException;
+
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -19,11 +19,32 @@ public class Room {
     private String[][] roomMatrix;
     private int nbLines;
     private int nbColumns;
+    private Set<Position> accessiblePositions;
 
     public Room(String[][] matrix) {
         roomMatrix = matrix;
         nbLines =  matrix.length;
         nbColumns = matrix.length >0 ? matrix[0].length : 0;
+        accessiblePositions = new HashSet<>();
+    }
+
+    /**
+     * Return all non wall position within the room
+     * @return
+     */
+    public List<Position> getPositionsToClean() {
+
+        List<Position> positions = new ArrayList<>();
+        IntStream.range(0,nbLines).forEach(
+                line -> IntStream.range(0,nbColumns).forEach (
+                        col -> {
+                            if(NOT_CLEANED.equals(roomMatrix[line][col])) {
+                                positions.add(new Position(line,col));
+                            }
+                        })
+        );
+
+        return positions;
     }
 
     /**
@@ -31,19 +52,8 @@ public class Room {
      * @return
      */
     public Position getRandomPosition() {
-
-        List<Position> emptyPositions = new ArrayList<>();
-
-        IntStream.range(0,nbLines).forEach(
-                line -> IntStream.range(0,nbColumns).forEach (
-                        col -> {
-                            if(NOT_CLEANED.equals(roomMatrix[line][col])) {
-                                emptyPositions.add(new Position(line,col));
-                            }
-                        })
-        );
-
-        return emptyPositions.get(new Random().nextInt(emptyPositions.size()));
+        List<Position> positionsToClean = getPositionsToClean();
+        return positionsToClean.get(new Random().nextInt(positionsToClean.size()));
     }
 
     /**
@@ -52,55 +62,63 @@ public class Room {
      */
     public boolean cleaningDone() {
         return Arrays.stream(roomMatrix)
-                .noneMatch(row -> Arrays.asList(row)
-                        .contains(NOT_CLEANED));
+                .noneMatch(row -> Arrays.asList(row).contains(NOT_CLEANED));
     }
 
 
     /**
      *
-     * Check if room matrix is well formed and contains only allowed characters
+     * Check if room matrix is well formed, with only reachable positions,
+     * and contains only allowed characters
      *
      * @return
      */
-    public boolean roomCheck() {
+    public boolean roomCheck() throws InvalidRoomStructureException, InvalidRoomContentException {
 
-        boolean valid = true;
-        List<String> allowed = Arrays.asList("M", NOT_CLEANED);
+        List<String> allowed = Arrays.asList(WALL, NOT_CLEANED);
 
         for(String[] row : roomMatrix) {
             if(row.length != nbColumns)  {
-                return false;
+                throw new InvalidRoomStructureException("Wrong room structure, all lines must have same length !");
             }
 
             if(Arrays.stream(row).anyMatch(s -> !allowed.contains(s))) {
-                return false;
+                throw new InvalidRoomContentException("Unauthorized characters found in room content !");
             }
         }
 
-        //test if each case has a valid move
-        /*
-        for (int line = 0; line < lines; line++) {
-            for (int col = 0; col < columns; col++) {
-                if (EMPTY_CASE.equals(roomMatrix[line][col])) {
-                    List<Coordinates> possibleMoves =
-                            new Coordinates(line,col)
-                                    .getCoordinatesAround()
-                                    .stream()
-                                    .filter(this::isValidMove)
-                                    .collect(Collectors.toList());
-                    if (possibleMoves.isEmpty()) {
-                        throw new RoomException("Matrix not valid : no possible moves for case "
-                                + new Coordinates(line,col).toString());
-                    }
-                }
-            }
-        }*/
+        Set<Position> positions = new HashSet<>();
+        positions.add(getRandomPosition());
+        if(!isAllPositionsAccessible(positions)) {
+            throw new InvalidRoomStructureException("Wrong room structure : some positions are not accessible by the hoover !");
+        }
 
-        return valid;
+        return true;
     }
 
+    /**
+     * Check if all positions are accessible in the room, recursively, using contamination algorithm
+     * @param positions
+     * @return
+     */
+    public boolean isAllPositionsAccessible(Set<Position> positions) {
 
+        if(positions.isEmpty()) {
+            return accessiblePositions.size() == getPositionsToClean().size();
+        }
 
+        accessiblePositions.addAll(positions);
+        Set<Position> nextStepPositions = new HashSet<>();
+        for(Position position : positions) {
+            nextStepPositions.addAll(
+                    position.getPositionsAround(nbLines, nbColumns)
+                    .stream()
+                    .filter(p -> !accessiblePositions.contains(p) &&
+                            !WALL.equals(roomMatrix[p.getLine()][p.getColumn()]))
+                    .collect(Collectors.toList())
+            );
+        }
+        return isAllPositionsAccessible(nextStepPositions);
+    }
 
 }
