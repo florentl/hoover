@@ -41,6 +41,7 @@ public class Dyson {
         Position nextPosition = null;
 
         //set the hoover on random position and clean this position
+        currentPosition = room.getRandomPosition();
         moveAndClean(room, currentPosition);
 
         while(!room.cleaningDone()) {
@@ -50,6 +51,8 @@ public class Dyson {
                     .collect(Collectors.toList());
             if (uncleanedPositions.isEmpty()) {
                 //hover moves to closest uncleaned position
+
+
             } else {
                 //we choose position to clean according the direction, if possible
                 nextPosition = getPosition(uncleanedPositions, currentDirection);
