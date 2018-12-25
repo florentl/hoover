@@ -17,14 +17,6 @@ public class Position {
         this.column = column;
     }
 
-    public int getLine() {
-        return line;
-    }
-
-    public int getColumn() {
-        return column;
-    }
-
     @Override
     public String toString() {
         return "[" + line + "," + column + "]";
@@ -67,4 +59,14 @@ public class Position {
         Position p = (Position)o;
         return p.getColumn() == column && p.getLine() == line;
     }
+
+    public int getLine() {
+        return line;
+    }
+
+    public int getColumn() {
+        return column;
+    }
+
+
 }

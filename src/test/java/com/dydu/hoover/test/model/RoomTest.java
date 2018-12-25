@@ -150,4 +150,19 @@ public class RoomTest {
         Assert.assertTrue(room.roomCheck());
     }
 
+    @Test
+    public void testCleanPosition() {
+        String[][] matrix
+                = {
+                {"M", "M", "M", "M", "M", "M", "M"},
+                {"M", " ", " ", " ", " ", "M", "M"},
+                {"M", "M", " ", " ", " ", " ", "M"},
+                {"M", " ", " ", "M", "M", " ", "M"},
+                {"M", "M", "M", "M", "M", "M", "M"}};
+
+        Room room = new Room(matrix);
+        room.cleanPosition(new Position(1,1));
+        Assert.assertTrue(Room.CLEANED.equals(room.getRoomMatrix()[1][1]));
+    }
+
 }

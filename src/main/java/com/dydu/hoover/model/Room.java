@@ -116,11 +116,30 @@ public class Room {
                     position.getPositionsAround(nbLines, nbColumns)
                     .stream()
                     .filter(p -> !accessiblePositions.contains(p) &&
-                            !WALL.equals(roomMatrix[p.getLine()][p.getColumn()]))
+                            !WALL.equals(getPositionValue(p)))
                     .collect(Collectors.toList())
             );
         }
         return isAllPositionsAccessible(nextStepPositions);
     }
 
+    public void cleanPosition(Position p) {
+        roomMatrix[p.getLine()][p.getColumn()] = Room.CLEANED;
+    }
+
+    public int getNbLines() {
+        return nbLines;
+    }
+
+    public int getNbColumns() {
+        return nbColumns;
+    }
+
+    public String getPositionValue(Position p) {
+        return roomMatrix[p.getLine()][p.getColumn()];
+    }
+
+    public String[][] getRoomMatrix() {
+        return roomMatrix;
+    }
 }
