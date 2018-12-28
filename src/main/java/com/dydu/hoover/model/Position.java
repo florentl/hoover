@@ -2,6 +2,7 @@ package com.dydu.hoover.model;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -34,18 +35,24 @@ public class Position {
 
     /**
      * Return all valid positions (down, up, right and left) around the position instance, depending on total
-     * room lines and columns
+     * room lines and columns. Additional predicate can also be used
      * @return
      */
-    public List<Position> getPositionsAround(int totalLines, int totalColumns) {
+     public List<Position> getPositionsAround(int totalLines, int totalColumns,
+                                             Predicate<Position> additional) {
 
         List<Position> positions = List.of(new Position(line + 1, column),
                 new Position(line - 1, column),
                 new Position(line, column + 1),
                 new Position(line, column - 1));
+        Predicate<Position> positionPredicate = p -> p.isValid(totalLines, totalColumns);
+        if(additional != null) {
+            positionPredicate = positionPredicate.and(additional);
+        }
+
         return positions
                 .stream()
-                .filter(p -> p.isValid(totalLines, totalColumns))
+                .filter(positionPredicate)
                 .collect(Collectors.toList());
     }
 

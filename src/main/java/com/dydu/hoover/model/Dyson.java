@@ -37,7 +37,7 @@ public class Dyson {
     public void clean(Room room) {
         int nbLines = room.getNbLines();
         int nbColumns = room.getNbColumns();
-        List<Position> uncleanedPositions;
+        List<Position> notCleanedPositions;
         Position nextPosition = null;
 
         //set the hoover on random position and clean this position
@@ -45,19 +45,18 @@ public class Dyson {
         moveAndClean(room, currentPosition);
 
         while(!room.cleaningDone()) {
-            uncleanedPositions = currentPosition.getPositionsAround(nbLines, nbColumns)
-                    .stream()
-                    .filter(p -> Room.NOT_CLEANED.equals(room.getPositionValue(p)))
-                    .collect(Collectors.toList());
-            if (uncleanedPositions.isEmpty()) {
-                //hover moves to closest uncleaned position
 
+            Predicate<Position> notCleanedPredicate = p -> Room.NOT_CLEANED.equals(room.getPositionValue(p));
+            notCleanedPositions = currentPosition.getPositionsAround(nbLines, nbColumns, notCleanedPredicate);
+
+            if (notCleanedPositions.isEmpty()) {
+                //hover moves to closest uncleaned position
 
             } else {
                 //we choose position to clean according the direction, if possible
-                nextPosition = getPosition(uncleanedPositions, currentDirection);
+                nextPosition = getPosition(notCleanedPositions, currentDirection);
                 if(nextPosition == null) {
-                    nextPosition = uncleanedPositions.get(0);
+                    nextPosition = notCleanedPositions.get(0);
                     setNewDirection(nextPosition);
                 }
             }

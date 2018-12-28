@@ -4,7 +4,7 @@ import com.dydu.hoover.exceptions.InvalidRoomContentException;
 import com.dydu.hoover.exceptions.InvalidRoomStructureException;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 /**
@@ -109,16 +109,14 @@ public class Room {
             return accessiblePositions.size() == getPositionsToClean().size();
         }
 
+        Predicate<Position> positionPredicate = p -> !accessiblePositions.contains(p) &&
+                !WALL.equals(getPositionValue(p));
+
         accessiblePositions.addAll(positions);
         Set<Position> nextStepPositions = new HashSet<>();
         for(Position position : positions) {
             nextStepPositions.addAll(
-                    position.getPositionsAround(nbLines, nbColumns)
-                    .stream()
-                    .filter(p -> !accessiblePositions.contains(p) &&
-                            !WALL.equals(getPositionValue(p)))
-                    .collect(Collectors.toList())
-            );
+                    position.getPositionsAround(nbLines, nbColumns, positionPredicate));
         }
         return isAllPositionsAccessible(nextStepPositions);
     }

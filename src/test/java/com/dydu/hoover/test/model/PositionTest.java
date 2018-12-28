@@ -43,7 +43,7 @@ public class PositionTest {
     @Test
     public void testPositionAroundOrigin() {
         Position origin = new Position(0, 0);
-        List<Position> positionsAround = origin.getPositionsAround(3,3);
+        List<Position> positionsAround = origin.getPositionsAround(3,3, null);
         Assert.assertTrue(
                 positionsAround.size() == 2
                         && positionsAround.contains(new Position(0,1))
@@ -54,7 +54,7 @@ public class PositionTest {
     @Test
     public void testPositionAroundRightBottom() {
         Position rightBottom = new Position(2, 2);
-        List<Position> positionsAround = rightBottom.getPositionsAround(3,3);
+        List<Position> positionsAround = rightBottom.getPositionsAround(3,3, null);
         Assert.assertTrue(
                 positionsAround.size() == 2
                         && positionsAround.contains(new Position(1,2))
@@ -65,7 +65,7 @@ public class PositionTest {
     @Test
     public void testPositionAround() {
         Position rightBottom = new Position(2, 2);
-        List<Position> positionsAround = rightBottom.getPositionsAround(5,5);
+        List<Position> positionsAround = rightBottom.getPositionsAround(5,5, null);
         Assert.assertTrue(
                 positionsAround.size() == 4
                         && positionsAround.contains(new Position(1,2))
