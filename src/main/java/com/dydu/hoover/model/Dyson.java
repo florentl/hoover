@@ -2,8 +2,8 @@ package com.dydu.hoover.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * Class representing the hoover with its current position in the room,
@@ -95,7 +95,7 @@ public class Dyson {
 
         return positions
                 .stream()
-                .filter(predicate)
+                .filter(Objects.requireNonNull(predicate))
                 .findAny()
                 .orElse(null);
     }
@@ -103,7 +103,6 @@ public class Dyson {
     /**
      * Setting the new direction according the position given in parameter
      * @param p
-     * @return
      */
     public void setNewDirection(Position p) {
         int lineDelta = currentPosition.getLine() - p.getLine();
@@ -134,7 +133,7 @@ public class Dyson {
      * @param room
      * @param p
      */
-    public void moveAndClean(Room room, Position p) {
+    private void moveAndClean(Room room, Position p) {
         moves.add(p);
         room.cleanPosition(p);
         currentPosition = p;
