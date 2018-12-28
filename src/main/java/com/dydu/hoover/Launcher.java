@@ -24,8 +24,10 @@ public class Launcher {
                 Dyson hoover = new Dyson();
                 long start = System.currentTimeMillis();
                 hoover.clean(room);
-                LOG.info("Room cleaning done, duration " + ((System.currentTimeMillis() - start)/1000) + " sec.");
-                LOG.info("Moves " + hoover.getMoves());
+                LOG.info("Room cleaning done, duration " + (System.currentTimeMillis() - start) + " msec.");
+                LOG.info("Total Moves : " + hoover.getMoves().size());
+                LOG.info("Moves :\n" + hoover.getMoves());
+                LOG.info("Room :\n" + room.toString());
             } catch (IOException e) {
                 LOG.error("File not found, please check your file path ! ");
             } catch (InvalidRoomStructureException | InvalidRoomContentException e) {

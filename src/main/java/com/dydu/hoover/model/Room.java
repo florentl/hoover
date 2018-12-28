@@ -30,7 +30,6 @@ public class Room {
 
     /**
      * Return all non wall position within the room
-     * @return
      */
     public List<Position> getPositionsToClean() {
 
@@ -49,7 +48,6 @@ public class Room {
 
     /**
      * Return a random non wall position within the room
-     * @return
      */
     public Position getRandomPosition() {
         List<Position> positionsToClean = getPositionsToClean();
@@ -58,7 +56,6 @@ public class Room {
 
     /**
      * Tells if the room cleaning is over
-     * @return
      */
     public boolean cleaningDone() {
         return Arrays.stream(roomMatrix)
@@ -67,10 +64,7 @@ public class Room {
 
 
     /**
-     *
      * Check if room matrix is well formed, with only allowed characters and accessible positions
-     *
-     * @return
      */
     public boolean roomCheck() throws InvalidRoomStructureException, InvalidRoomContentException {
 
@@ -95,13 +89,13 @@ public class Room {
                     InvalidRoomStructureException.WRONG_ROOM_STRUCTURE_POSITIONS_NOT_ACCESSIBLE);
         }
 
+        accessiblePositions = null;
+
         return true;
     }
 
     /**
      * Check if all positions are accessible in the room, recursively, using contamination algorithm
-     * @param positions
-     * @return
      */
     public boolean isAllPositionsAccessible(Set<Position> positions) {
 
@@ -139,5 +133,16 @@ public class Room {
 
     public String[][] getRoomMatrix() {
         return roomMatrix;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for(String[] line : roomMatrix) {
+            sb.append(Arrays.asList(line));
+            sb.append("\n");
+        }
+
+        return sb.toString();
     }
 }

@@ -25,9 +25,6 @@ public class Position {
 
     /**
      * A valid position has line and column indexes between 0 (inclusive) and total line / column number
-     * @param totalLines
-     * @param totalColumns
-     * @return
      */
     public boolean isValid(int totalLines, int totalColumns) {
         return line >= 0 && line < totalLines && column >= 0 && column < totalColumns;
@@ -36,7 +33,6 @@ public class Position {
     /**
      * Return all valid positions (down, up, right and left) around the position instance, depending on total
      * room lines and columns. Additional predicate can also be used
-     * @return
      */
      public List<Position> getPositionsAround(int totalLines, int totalColumns,
                                              Predicate<Position> additional) {

@@ -1,7 +1,9 @@
 package com.dydu.hoover.test.model;
 
 import com.dydu.hoover.model.Dyson;
+import com.dydu.hoover.model.Path;
 import com.dydu.hoover.model.Position;
+import com.dydu.hoover.model.Room;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -103,6 +105,110 @@ public class DysonTest {
         myHoover.setCurrentPosition(currentPosition);
         myHoover.setNewDirection(positionLeft);
         Assert.assertEquals(myHoover.getCurrentDirection(), Dyson.LEFT);
+    }
+
+    @Test
+    public void testCleanPathes() {
+
+        Position p00= new Position(0,0);
+        Position p01= new Position(0,1);
+        Position p10= new Position(1,0);
+        Position p11= new Position(1,1);
+
+        Path shortest = new Path(p00);
+        shortest.getPositions().add(p01);
+
+        Path longest = new Path(p00);
+        longest.getPositions().add(p10);
+        longest.getPositions().add(p11);
+        longest.getPositions().add(p01);
+
+        Path deaEnd = new Path(p00);
+        deaEnd.setDeadEnd(true);
+
+        List<Path> pathes = new ArrayList<>();
+        pathes.add(shortest);
+        pathes.add(longest);
+        pathes.add(deaEnd);
+
+        Dyson hoover = new Dyson();
+        hoover.cleanPathes(pathes);
+
+        Assert.assertTrue(pathes.size() == 1 && pathes.get(0).equals(shortest));
+    }
+
+    @Test
+    public void testCleanPathesWithSameLength() {
+
+        Position p00= new Position(0,0);
+        Position p01= new Position(0,1);
+        Position p10= new Position(1,0);
+        Position p11= new Position(1,1);
+
+        Path p1 = new Path(p00);
+        p1.getPositions().add(p01);
+        p1.getPositions().add(p11);
+
+        Path p2 = new Path(p00);
+        p2.getPositions().add(p10);
+        p2.getPositions().add(p11);
+
+        List<Path> pathes = new ArrayList<>();
+        pathes.add(p1);
+        pathes.add(p2);
+
+        Dyson hoover = new Dyson();
+        hoover.cleanPathes(pathes);
+
+        Assert.assertTrue(pathes.size() == 1 && pathes.get(0).equals(p1));
+    }
+
+    @Test
+    public void testShortestPath() {
+        String[][] matrix
+                = {
+                {"M", "M", "M", "M", "M", "M", "M"},
+                {"M", "C", "C", "C", "C", "M", "M"},
+                {"M", "C", "C", "C", "C", "C", "M"},
+                {"M", "C", "C", "C", "C", "C", "M"},
+                {"M", "C", "C", "C", "C", "C", "M"},
+                {"M", "C", "M", "C", "C", "C", "M"},
+                {"M", "C", "C", "C", "M", "C", "M"},
+                {"M", "C", "M", "C", "M", "C", "M"},
+                {"M", "C", "C", "C", "C", " ", "M"},
+                {"M", "M", "M", "M", "M", "M", "M"}};
+        Room room = new Room(matrix);
+        Dyson hoover = new Dyson();
+
+        Path path = hoover.shortestPathToNextPosition(new Position(2, 1), room);
+        Assert.assertTrue(path.getPositions().size() == 11);
+    }
+
+    @Test
+    public void testMoveAlongPath() {
+        String[][] matrix
+                = {
+                {"M", "M", "M", "M", "M", "M", "M"},
+                {"M", " ", " ", " ", " ", " ", "M"},
+                {"M", "M", "M", "M", "M", "M", "M"}};
+        Room room = new Room(matrix);
+        Position p11 = new Position(1,1);
+        Position p12 = new Position(1,2);
+        Position p13 = new Position(1,3);
+        Dyson hoover = new Dyson();
+        hoover.setCurrentPosition(p11);
+        hoover.getMoves().add(p11);
+
+        Path path = new Path(p11);
+        path.getPositions().add(p12);
+        path.getPositions().add(p13);
+
+        hoover.moveAlongPath(path, room);
+
+        Assert.assertTrue(hoover.getCurrentPosition().equals(p13)
+                && hoover.getMoves().size() == 3
+                && Room.CLEANED.equals(room.getPositionValue(p13))
+                && Dyson.RIGHT == hoover.getCurrentDirection());
     }
 
 }
