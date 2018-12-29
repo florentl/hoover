@@ -28,6 +28,4 @@ public final class MatrixFileReaderTest {
     public void readFileWithError() throws IOException {
         new MatrixFileReader().readFile("null");
     }
-
-
 }
