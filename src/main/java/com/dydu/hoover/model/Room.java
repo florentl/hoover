@@ -70,6 +70,11 @@ public class Room {
 
         List<String> allowed = Arrays.asList(WALL, NOT_CLEANED);
 
+        if(roomMatrix.length == 0) {
+            throw new InvalidRoomStructureException(
+                    InvalidRoomStructureException.WRONG_ROOM_STRUCTURE_EMPTY);
+        }
+
         for(String[] row : roomMatrix) {
             if(row.length != nbColumns)  {
                 throw new InvalidRoomStructureException(
