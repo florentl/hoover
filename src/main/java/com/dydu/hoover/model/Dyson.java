@@ -46,7 +46,7 @@ public class Dyson {
 
         while(!room.cleaningDone()) {
             notCleanedPositions = currentPosition.getPositionsAround(nbLines, nbColumns, notCleanedPredicate);
-            //there is no positions to clean which is directly accessible,
+            //there is no positions to clean which are directly accessible,
             //hoover find the closest position to clean and move to it
             if (notCleanedPositions.isEmpty()) {
                 moveAlongPath(shortestPathToNextPosition(currentPosition, room), room);
@@ -146,13 +146,13 @@ public class Dyson {
         positions.remove(positionToClean);
 
         //recording all hoover moves
-        positions.forEach(p -> moves.add(p));
+        moves.addAll(positions);
 
         //set new direction
         currentPosition = positions.getLast();
         setNewDirection(positionToClean);
 
-        //finally clean position
+        //finally move and clean position
         moveAndClean(room, positionToClean);
     }
 
