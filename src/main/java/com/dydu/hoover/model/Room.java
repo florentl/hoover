@@ -134,15 +134,4 @@ public class Room {
     public String[][] getRoomMatrix() {
         return roomMatrix;
     }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for(String[] line : roomMatrix) {
-            sb.append(Arrays.asList(line));
-            sb.append("\n");
-        }
-
-        return sb.toString();
-    }
 }
